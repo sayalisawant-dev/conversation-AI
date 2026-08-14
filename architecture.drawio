@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2340" math="0" shadow="1">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ============================================================ -->
+    <!-- TITLE -->
+    <!-- ============================================================ -->
+    <mxCell id="title" value="Enterprise Conversational AI Platform — AWS Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+      <mxGeometry x="200" y="20" width="2800" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 0 — CLIENT + AUTH -->
+    <!-- ============================================================ -->
+    <mxCell id="layer0_bg" value="Layer 0 — Client &amp; Auth" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="200" y="90" width="2800" height="130" as="geometry" />
+    </mxCell>
+
+    <!-- Client Apps -->
+    <mxCell id="web_client" value="Web App&#xa;(React/Angular)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="layer0_bg">
+      <mxGeometry x="40" y="50" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="mobile_client" value="Mobile App&#xa;(iOS / Android)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="layer0_bg">
+      <mxGeometry x="200" y="50" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="api_client" value="3rd-Party API&#xa;Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="layer0_bg">
+      <mxGeometry x="360" y="50" width="130" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Cognito -->
+    <mxCell id="cognito" value="Amazon Cognito&#xa;(User Pools + App Client)&#xa;JWT / OAuth2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="layer0_bg">
+      <mxGeometry x="560" y="40" width="200" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- API Gateway -->
+    <mxCell id="apigw" value="Amazon API Gateway&#xa;(REST — Edge Optimised)&#xa;Rate Limit | WAF | TLS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="layer0_bg">
+      <mxGeometry x="830" y="40" width="220" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 1 — PRE-PROCESSING PIPELINE -->
+    <!-- ============================================================ -->
+    <mxCell id="layer1_bg" value="Layer 1 — Request Pre-Processing Pipeline (AWS Lambda Orchestrator)" style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="200" y="240" width="2800" height="180" as="geometry" />
+    </mxCell>
+
+    <!-- Step 1: Request Validation -->
+    <mxCell id="req_val" value="① Request Validation&#xa;─────────&#xa;Lambda&#xa;Schema / JWT check&#xa;Rate limit guard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer1_bg">
+      <mxGeometry x="30" y="50" width="170" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Step 2: Language Detection -->
+    <mxCell id="lang_detect" value="② Language Detection&#xa;─────────&#xa;Bedrock — Claude Haiku&#xa;Detect ISO-639 lang code&#xa;Route: supported / unsupported" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer1_bg">
+      <mxGeometry x="230" y="50" width="190" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Step 3: Chitchat Detection -->
+    <mxCell id="chitchat" value="③ Chitchat Detection&#xa;─────────&#xa;Bedrock — Claude Haiku&#xa;Classify: chitchat / task&#xa;Short-circuit chitchat reply" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer1_bg">
+      <mxGeometry x="450" y="50" width="190" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Step 4: Guardrail -->
+    <mxCell id="guardrail" value="④ Guardrail Safety&#xa;─────────&#xa;Bedrock Guardrails&#xa;PII Redaction&#xa;Toxicity / Policy filter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="layer1_bg">
+      <mxGeometry x="670" y="50" width="190" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Step 5: Query Preprocessing -->
+    <mxCell id="query_pre" value="⑤ Query Preprocessing&#xa;─────────&#xa;Bedrock — Nova Lite&#xa;Spell-correct, expand acronyms&#xa;Query rewrite / HyDE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer1_bg">
+      <mxGeometry x="890" y="50" width="190" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Step 6: Intent Classification -->
+    <mxCell id="intent" value="⑥ Intent Classification&#xa;─────────&#xa;Bedrock — Nova Pro&#xa;Multi-label intent tags&#xa;Confidence score + metadata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;" vertex="1" parent="layer1_bg">
+      <mxGeometry x="1110" y="50" width="190" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 2 — ROUTER -->
+    <!-- ============================================================ -->
+    <mxCell id="layer2_bg" value="Layer 2 — Intelligent Router" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="200" y="440" width="2800" height="120" as="geometry" />
+    </mxCell>
+
+    <mxCell id="router" value="⑦ Router&#xa;Lambda — Rule Engine + LLM fallback (Nova Pro)&#xa;Decision: RAG | Agent Core | Live Human Agent" style="rhombus;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#b46504;fontSize=12;fontStyle=1;" vertex="1" parent="layer2_bg">
+      <mxGeometry x="1050" y="15" width="600" height="90" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 3A — RAG PATH -->
+    <!-- ============================================================ -->
+    <mxCell id="layer3a_bg" value="Layer 3A — RAG Pipeline" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="200" y="580" width="900" height="480" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_embed" value="⑧a Embedding&#xa;─────────&#xa;Bedrock — Titan Embed&#xa;Text v2 (1536-dim)&#xa;Multi-lingual support" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="30" y="60" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_vectordb" value="⑧b Vector Search&#xa;─────────&#xa;Amazon OpenSearch&#xa;Serverless (k-NN)&#xa;ANN index (HNSW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="250" y="60" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_topk" value="⑧c Top-K Retrieval&#xa;─────────&#xa;Retrieve top-K=10&#xa;chunks with scores&#xa;OpenSearch filter DSL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="470" y="60" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_rerank" value="⑧d Re-Ranking&#xa;─────────&#xa;Bedrock Reranker&#xa;(Cohere Rerank v3)&#xa;Narrow to top-K=3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="690" y="60" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_s3" value="Document Store&#xa;─────────&#xa;Amazon S3&#xa;Raw docs + chunked&#xa;content (versioned)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="250" y="210" width="180" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_gen" value="⑧e Generation + Citation&#xa;─────────&#xa;Bedrock — Claude 3.5 Sonnet&#xa;Grounded answer with&#xa;[source, page, score] citations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="250" y="340" width="220" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rag_resp" value="JSON Response&#xa;{ answer, citations,&#xa;  confidence, language }" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="layer3a_bg">
+      <mxGeometry x="560" y="350" width="200" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- RAG arrows -->
+    <mxCell id="e_rag1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rag_embed" target="rag_vectordb" parent="layer3a_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_rag2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rag_vectordb" target="rag_topk" parent="layer3a_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_rag3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rag_topk" target="rag_rerank" parent="layer3a_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_rag4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rag_rerank" target="rag_gen" parent="layer3a_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_rag5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rag_s3" target="rag_vectordb" parent="layer3a_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_rag6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rag_gen" target="rag_resp" parent="layer3a_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 3B — AGENT CORE PATH -->
+    <!-- ============================================================ -->
+    <mxCell id="layer3b_bg" value="Layer 3B — Agent Core Pipeline" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="1130" y="580" width="1000" height="480" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ac_supervisor" value="⑨a Supervisor Agent&#xa;─────────&#xa;LangGraph — StateGraph&#xa;Task decomposition&#xa;Tool selection logic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="380" y="50" width="200" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ac_sme1" value="SME Agent — Finance&#xa;─────────&#xa;LangGraph Node&#xa;Domain-tuned prompt&#xa;Nova Pro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="50" y="220" width="170" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="ac_sme2" value="SME Agent — Support&#xa;─────────&#xa;LangGraph Node&#xa;Domain-tuned prompt&#xa;Nova Pro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="250" y="220" width="170" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="ac_sme3" value="SME Agent — General&#xa;─────────&#xa;LangGraph Node&#xa;Domain-tuned prompt&#xa;Nova Pro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="450" y="220" width="170" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ac_apigw" value="API Gateway&#xa;─────────&#xa;Internal REST Gateway&#xa;JWT Auth (Cognito)&#xa;VPC Link" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="700" y="220" width="170" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ac_mcp" value="MCP Tool Server&#xa;─────────&#xa;Model Context Protocol&#xa;Tool definitions (JSON)&#xa;Input/Output schemas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="700" y="360" width="170" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ac_ec2" value="EC2 — Private Subnet&#xa;─────────&#xa;Actual Business API&#xa;Auto Scaling Group&#xa;ALB + Security Groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="700" y="140" width="170" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ac_resp" value="JSON Response&#xa;{ answer, tool_calls,&#xa;  trace, language }" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="layer3b_bg">
+      <mxGeometry x="250" y="380" width="200" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- Agent arrows -->
+    <mxCell id="e_ac1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_supervisor" target="ac_sme1" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_ac2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_supervisor" target="ac_sme2" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_ac3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_supervisor" target="ac_sme3" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_ac4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_supervisor" target="ac_apigw" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_ac5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_apigw" target="ac_mcp" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_ac6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_apigw" target="ac_ec2" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_ac7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ac_sme2" target="ac_resp" parent="layer3b_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 3C — LIVE HUMAN AGENT PATH -->
+    <!-- ============================================================ -->
+    <mxCell id="layer3c_bg" value="Layer 3C — Live Human Agent Handoff" style="swimlane;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="2160" y="580" width="760" height="480" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lha_summary" value="⑩a Conversation Summary&#xa;─────────&#xa;Bedrock — Claude Haiku&#xa;Summarise full history&#xa;Extract key entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3c_bg">
+      <mxGeometry x="50" y="60" width="200" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lha_ticket" value="⑩b Ticket Creation&#xa;─────────&#xa;Lambda → REST API&#xa;Create ticket in CRM&#xa;(Zendesk / ServiceNow)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3c_bg">
+      <mxGeometry x="310" y="60" width="200" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lha_queue" value="⑩c Queue &amp; Route&#xa;─────────&#xa;Amazon Connect&#xa;Contact Flow&#xa;Skill-based routing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="layer3c_bg">
+      <mxGeometry x="50" y="230" width="200" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lha_notify" value="⑩d Agent Notification&#xa;─────────&#xa;SNS / SES&#xa;Push ticket + transcript&#xa;to live agent desktop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="layer3c_bg">
+      <mxGeometry x="310" y="230" width="200" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lha_human" value="Live Human Agent&#xa;─────────&#xa;Agent Workspace UI&#xa;Full transcript view&#xa;CRM integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" vertex="1" parent="layer3c_bg">
+      <mxGeometry x="180" y="370" width="220" height="90" as="geometry" />
+    </mxCell>
+
+    <!-- LHA arrows -->
+    <mxCell id="e_lha1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="lha_summary" target="lha_ticket" parent="layer3c_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_lha2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="lha_ticket" target="lha_queue" parent="layer3c_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_lha3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="lha_ticket" target="lha_notify" parent="layer3c_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_lha4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="lha_queue" target="lha_human" parent="layer3c_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e_lha5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="lha_notify" target="lha_human" parent="layer3c_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LAYER 4 — CROSS-CUTTING / OBSERVABILITY -->
+    <!-- ============================================================ -->
+    <mxCell id="layer4_bg" value="Layer 4 — Cross-Cutting: Observability, Storage &amp; Security" style="swimlane;startSize=30;fillColor=#f0f0f0;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="200" y="1080" width="2800" height="140" as="geometry" />
+    </mxCell>
+
+    <mxCell id="obs_cw" value="Amazon CloudWatch&#xa;Metrics | Logs | Alarms&#xa;LLM latency dashboards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="30" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_xray" value="AWS X-Ray&#xa;End-to-end tracing&#xa;Lambda + API GW traces" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="250" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_ddb" value="Amazon DynamoDB&#xa;Session / conversation&#xa;history store (TTL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="470" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_elastic" value="Amazon ElastiCache&#xa;(Redis) — Response&#xa;cache &amp; session state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="690" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_secret" value="AWS Secrets Manager&#xa;API keys | DB creds&#xa;MCP tool secrets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="910" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_kms" value="AWS KMS&#xa;Encryption at rest&#xa;S3 / DynamoDB / OpenSearch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="1130" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_vpc" value="VPC — Private Subnets&#xa;NAT GW | PrivateLink&#xa;Security Groups / NACLs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="1350" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_waf" value="AWS WAF + Shield&#xa;DDoS protection&#xa;IP allow/deny lists" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="1570" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_sqs" value="Amazon SQS / SNS&#xa;Async event bus&#xa;Dead-letter queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="layer4_bg">
+      <mxGeometry x="1790" y="50" width="200" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- MAIN FLOW ARROWS (cross-layer) -->
+    <!-- ============================================================ -->
+
+    <!-- Client → Cognito -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;" edge="1" source="web_client" target="cognito" parent="layer0_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;" edge="1" source="mobile_client" target="cognito" parent="layer0_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;" edge="1" source="api_client" target="cognito" parent="layer0_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- Cognito → API GW -->
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=2;" edge="1" source="cognito" target="apigw" parent="layer0_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- API GW → req_val (cross layer) -->
+    <mxCell id="e5" value="Validated JWT request" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="apigw" target="req_val" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Pipeline flow -->
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="req_val" target="lang_detect" parent="layer1_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="lang_detect" target="chitchat" parent="layer1_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="chitchat" target="guardrail" parent="layer1_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="guardrail" target="query_pre" parent="layer1_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="query_pre" target="intent" parent="layer1_bg"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- Intent → Router (cross layer) -->
+    <mxCell id="e11" value="Intent + metadata" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="intent" target="router" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Router → RAG (cross layer) -->
+    <mxCell id="e12" value="RAG route" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="router" target="rag_embed" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Router → Agent Core (cross layer) -->
+    <mxCell id="e13" value="Agent route" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="router" target="ac_supervisor" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Router → Live Human Agent (cross layer) -->
+    <mxCell id="e14" value="Human agent route" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="router" target="lha_summary" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LEGEND -->
+    <!-- ============================================================ -->
+    <mxCell id="legend_bg" value="Legend" style="swimlane;startSize=25;fillColor=#f0f0f0;strokeColor=#666;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="200" y="1240" width="700" height="160" as="geometry" />
+    </mxCell>
+    <mxCell id="leg1" value="Bedrock LLM call" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;" vertex="1" parent="legend_bg">
+      <mxGeometry x="20" y="40" width="140" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="leg2" value="Auth / Security" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="legend_bg">
+      <mxGeometry x="180" y="40" width="140" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="leg3" value="Storage / DB" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="legend_bg">
+      <mxGeometry x="340" y="40" width="140" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="leg4" value="Compute / Lambda" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="legend_bg">
+      <mxGeometry x="500" y="40" width="140" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="leg5" value="MCP / Agent Orchestration" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="legend_bg">
+      <mxGeometry x="20" y="100" width="200" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="leg6" value="Decision / Router" style="rhombus;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="legend_bg">
+      <mxGeometry x="240" y="95" width="160" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="leg7" value="Human Touchpoint" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" vertex="1" parent="legend_bg">
+      <mxGeometry x="420" y="100" width="160" height="40" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
